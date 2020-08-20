@@ -1,0 +1,12 @@
+# Build artifacts
+target/
+*.jar
+*.zip
+bin/
+
+# Mac files
+.DS_Store
+._*
+
+# local temp
+zzz*

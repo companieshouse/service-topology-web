@@ -1,0 +1,158 @@
+<head>
+  <style> body { margin: 0; } </style>
+
+  <script src="//unpkg.com/3d-force-graph"></script>
+  <!--<script src="../../dist/3d-force-graph.js"></script>-->
+  <script src="//unpkg.com/three"></script>
+  <script src="//unpkg.com/three-spritetext"></script>
+  <script src="//unpkg.com/dat.gui"></script>
+</head>
+
+<body>
+  <div id="3d-graph"></div>
+
+  <script>
+
+    let journey = 'all';
+
+    // controls
+    const controls = { 'Journey': 'all'};
+    const gui = new dat.GUI();
+    gui.add(controls, 'Journey', ['all', 'journey1', 'journey2'])
+      .onChange(journey => setData(journey));
+
+    const gData = {
+      "nodes": [
+          {"id":0,"name": "node 1"},
+          {"id":1,"name": "node 2"},
+          {"id":2,"name": "node 3"}
+        ],
+      "links":
+        [
+          {"source":1,"target":0,"journey":"journey1"},
+          {"source":2,"target":0,"journey":"journey2"}
+        ]
+    };
+
+    // cross-link node objects
+    gData.links.forEach(link => {
+      const a = gData.nodes[link.source];
+      const b = gData.nodes[link.target];
+      !a.neighbors && (a.neighbors = []);
+      !b.neighbors && (b.neighbors = []);
+      a.neighbors.push(b);
+      b.neighbors.push(a);
+
+      !a.links && (a.links = []);
+      !b.links && (b.links = []);
+      a.links.push(link);
+      b.links.push(link);
+    });
+
+    const highlightNodes = new Set();
+    const highlightLinks = new Set();
+    let hoverNode = null;
+
+    const Graph = ForceGraph3D()
+      //(document.getElementById('3d-graph'))
+        //.graphData(getData())
+        //.nodeColor(node => highlightNodes.has(node) ? node === hoverNode ? 'rgb(255,0,0,1)' : 'rgba(255,160,0,0.8)' : 'rgba(0,255,255,0.6)')
+        // .nodeRelSize(1)
+        .nodeThreeObject(node => {
+          // use a sphere as a drag handle
+          const obj = new THREE.Mesh(
+            new THREE.SphereGeometry(4),
+            new THREE.MeshBasicMaterial({ depthWrite: false, opacity: 70 })
+          );
+
+          // add text sprite as child
+          const sprite = new SpriteText(node.name);
+          sprite.color = 'white';
+          sprite.textHeight = 3;
+          sprite.position.x = 5;
+          sprite.position.y = 7;
+          obj.add(sprite);
+
+          return obj;
+        })
+
+        .linkWidth(link => highlightLinks.has(link) ? 2 : 1)
+        .linkDirectionalParticles(link => highlightLinks.has(link) ? 2 : 0)
+        .linkDirectionalParticleWidth(2)
+        .onNodeHover(node => {
+          // no state change
+          if ((!node && !highlightNodes.size) || (node && hoverNode === node)) return;
+
+          highlightNodes.clear();
+          highlightLinks.clear();
+          if (node) {
+            highlightNodes.add(node);
+            node.neighbors.forEach(neighbor => highlightNodes.add(neighbor));
+            node.links.forEach(link => highlightLinks.add(link));
+          }
+
+          hoverNode = node || null;
+
+          updateHighlight();
+        })
+        .onLinkHover(link => {
+          highlightNodes.clear();
+          highlightLinks.clear();
+
+          if (link) {
+            highlightLinks.add(link);
+            highlightNodes.add(link.source);
+            highlightNodes.add(link.target);
+          }
+
+          updateHighlight();
+        });
+
+    function updateHighlight() {
+      // trigger update of highlighted objects in scene
+      Graph
+        .nodeColor(Graph.nodeColor())
+        .linkWidth(Graph.linkWidth())
+        .linkDirectionalParticles(Graph.linkDirectionalParticles());
+    }
+
+    function setData(journey) {
+
+      let data = Object.assign({}, gData);
+
+      if (journey !== 'all') {
+
+        for (let i = 0; i < data.links.length; i++) {
+          if (data.links[i].journey !== journey) {
+            data.links.splice(i, 1);
+            i--;
+          }
+        }
+      }
+
+      let linkedNodes = [];
+      for (let i = 0; i < data.links.length; i++) {
+        if (!linkedNodes.includes(data.links[i].source)) {
+          linkedNodes.push(data.links[i].source.id);
+        }
+        if (!linkedNodes.includes(data.links[i].target)) {
+          linkedNodes.push(data.links[i].target.id);
+        }
+      }
+
+      for (let i = 0; i < data.nodes.length; i++) {
+        if (!linkedNodes.includes(data.nodes[i].id)) {
+          data.nodes.splice(i, 1);
+          i--;
+        }
+      }
+
+      Graph.graphData(data);
+    }
+
+    (function() {
+      Graph(document.getElementById('3d-graph'))
+        .graphData(gData);
+    })();
+  </script>
+</body>
