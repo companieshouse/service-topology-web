@@ -10,3 +10,5 @@ bin/
 
 # local temp
 zzz*
+node_modules
+semantic
