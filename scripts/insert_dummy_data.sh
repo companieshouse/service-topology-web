@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-RESOURCE_ARN="arn:aws:rds:eu-west-2:169942020521:cluster:service-topology-cluster"
-SECRET_ARN="arn:aws:secretsmanager:eu-west-2:169942020521:secret:rds-db-credentials/cluster-HM2KV7KVZKQLFTMI7BVFFHDO4I/admin-Uswxua"
-DB="service_topology"
-
 aws rds-data execute-statement \
     --resource-arn "$RESOURCE_ARN" \
     --database "$DB" \
