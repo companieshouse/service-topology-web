@@ -45,8 +45,8 @@ const Graph = ForceGraph3D()
     .nodeThreeObject(node => {
       // use a sphere as a drag handle
       const obj = new THREE.Mesh(
-        new THREE.SphereGeometry(4),
-        new THREE.MeshBasicMaterial({ depthWrite: false, opacity: 70 })
+        new THREE.SphereGeometry(4,32,32),
+        new THREE.MeshStandardMaterial({ color: 0xc6c615, emissive: 0x42423e, metalness: 1, roughness: 0.5})
       );
 
       // add text sprite as child
