@@ -32,7 +32,7 @@ export async function get(req: Request, res: Response): Promise<Response> {
 
 export async function GetNodes(linkedApps: number[]): Promise<Node[]> {
 
-    let query = "SELECT id, name, colour FROM nodes WHERE id IN (" + linkedApps.toString() + ")"
+    let query = "SELECT nodes.id, nodes.name, node_types.colour FROM nodes INNER JOIN node_types ON nodes.node_type_id = node_types.id WHERE nodes.id IN (" + linkedApps.toString() + ")"
 
     const db = new RDSDatabase(params).getInstance();
     const results = await db.query(query);
