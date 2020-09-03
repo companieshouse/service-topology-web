@@ -1,0 +1,13 @@
+doctype html
+html(lang="en")
+  head
+    title Service Network Graph
+    script(src='//unpkg.com/3d-force-graph')
+    script(src='//unpkg.com/three')
+    script(src='//unpkg.com/three-spritetext')
+    script(src='//unpkg.com/dat.gui')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js')
+  body
+    h1 This is the graph page!
+    div(id='3d-graph')
+    script(src='/javascripts/graph.js')
