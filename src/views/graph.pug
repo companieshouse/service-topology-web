@@ -7,7 +7,37 @@ html(lang="en")
     script(src='//unpkg.com/three-spritetext')
     script(src='//unpkg.com/dat.gui')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js')
+    link(rel="stylesheet" type="text/css" href="semantic/semantic.min.css")
+    script(src="https://code.jquery.com/jquery-3.1.1.min.js", integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=", crossorigin="anonymous")
+    script(src="semantic/semantic.min.js")
   body
-    h1 This is the graph page!
+    .menu(style={margin: 0, 'background-color': 'black'})
+      .ui.inverted.menu
+        .ui.dropdown.item Home
+          i.dropdown.icon
+          .menu
+            a.item Search
+            a.item Add
+            a.item Remove
+        a.item
+          i.grid.layout.icon
+          | Browse
+        a.item Messages
+        .ui.dropdown.item More
+          i.dropdown.icon
+          .menu
+            a.item
+              i.edit.icon
+              | Search
+            a.item
+              i.globe.icon
+              | Add
+            a.item
+              i.settings.icon
+              | Remove
+
+    script(type="text/javascript").
+      $('.ui.dropdown').dropdown({on: 'hover'});
+
     div(id='3d-graph')
     script(src='/javascripts/graph.js')
