@@ -47,23 +47,8 @@ const Graph = ForceGraph3D()
       const threejs_geometry_attributes=node.threejs_geometry_attributes.split(',');
       const threejs_material_attributes=JSON.parse(node.threejs_material_attributes);
 
-      switch (threejs_geometry_attributes.length) {
-        case 3:
-          threejs_geometry_object = new THREE[node.threejs_geometry](threejs_geometry_attributes[0],threejs_geometry_attributes[1],threejs_geometry_attributes[2]);
-          break;
-        case 4:
-          threejs_geometry_object = new THREE[node.threejs_geometry](threejs_geometry_attributes[0],threejs_geometry_attributes[1],threejs_geometry_attributes[2],threejs_geometry_attributes[3]);
-          break;
-        case 5:
-          threejs_geometry_object = new THREE[node.threejs_geometry](threejs_geometry_attributes[0],threejs_geometry_attributes[1],threejs_geometry_attributes[2],threejs_geometry_attributes[3],threejs_geometry_attributes[4]);
-          break;
-        case 6:
-          threejs_geometry_object = new THREE[node.threejs_geometry](threejs_geometry_attributes[0],threejs_geometry_attributes[1],threejs_geometry_attributes[2],threejs_geometry_attributes[3],threejs_geometry_attributes[4],threejs_geometry_attributes[5]);
-          break;
-      }
-
       const obj = new THREE.Mesh(
-        threejs_geometry_object,
+        new THREE[node.threejs_geometry](...threejs_geometry_attributes),
         new THREE[node.threejs_material](JSON.parse(node.threejs_material_attributes))
       );
 
