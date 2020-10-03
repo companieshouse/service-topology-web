@@ -44,9 +44,12 @@ let hoverNode = null;
 const Graph = ForceGraph3D()
     .nodeThreeObject(node => {
       // use a sphere as a drag handle
+      const threejs_geometry_attributes=node.threejs_geometry_attributes.split(',');
+      const threejs_material_attributes=JSON.parse(node.threejs_material_attributes);
+
       const obj = new THREE.Mesh(
-        new THREE.SphereGeometry(4),
-        new THREE.MeshBasicMaterial({ depthWrite: false, opacity: 70 })
+        new THREE[node.threejs_geometry](...threejs_geometry_attributes),
+        new THREE[node.threejs_material](JSON.parse(node.threejs_material_attributes))
       );
 
       // add text sprite as child
