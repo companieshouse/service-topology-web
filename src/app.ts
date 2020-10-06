@@ -1,4 +1,6 @@
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 import bodyParser from 'body-parser';
 import express from 'express';
